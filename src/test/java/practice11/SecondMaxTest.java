@@ -7,8 +7,7 @@ package practice11;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+
 
 import java.util.NoSuchElementException;
 
@@ -42,14 +41,14 @@ public class SecondMaxTest {
     @DisplayName("Поиск второго по величине элемента в массиве из одного значения - ожидаем IllegalArgumentException")
     public void userCanNotFindSecondMaxInOneElementArray(){
         int[] input = {8};
-        assertThrows(IllegalArgumentException.class, () -> secondMax.findSecondMax(input));
+        assertThrows(NoSuchElementException.class, () -> secondMax.findSecondMax(input));
     }
 
     @Test
     @DisplayName("Поиск второго по величине элемента в пустом массиве - ожидаем IllegalArgumentException")
     public void userCanNotFindSecondMaxInEmptyArray(){
         int[] input = {};
-        assertThrows(IllegalArgumentException.class, () -> secondMax.findSecondMax(input));
+        assertThrows(NoSuchElementException.class, () -> secondMax.findSecondMax(input));
     }
 
 

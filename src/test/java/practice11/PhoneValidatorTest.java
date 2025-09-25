@@ -58,9 +58,9 @@ public class PhoneValidatorTest {
     }
 
     @Test
-    @DisplayName("Проверка передачи null - ожидаем NullPointerException")
+    @DisplayName("Проверка передачи null - ожидаем IllegalArgumentException")
     public void userCanNotValidateNullPhone(){
-        assertThrows(NullPointerException.class, () -> phoneValidator.isValidPhoneNumber(null));
+        assertThrows(IllegalArgumentException.class, () -> phoneValidator.isValidPhoneNumber(null));
     }
 
 }

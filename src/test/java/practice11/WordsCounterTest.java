@@ -49,9 +49,9 @@ public class WordsCounterTest {
     }
 
     @Test
-    @DisplayName("Проверка передачи null - ожидаем NullPointerException")
+    @DisplayName("Проверка передачи null - ожидаем IllegalArgumentException")
     public void userCanNotCheckWordsQuantityInNull(){
-        assertThrows(NullPointerException.class, () -> wordsCounter.countWords(null));
+        assertThrows(IllegalArgumentException.class, () -> wordsCounter.countWords(null));
     }
 
 }
