@@ -24,7 +24,9 @@ public class UserValidator {
             throw new InvalidUserException("Имя должно начинаться с заглавной буквы");
         else if (user.getAge()<18 ||user.getAge()>100)
             throw new InvalidUserException("Возраст должен быть от 18 до 100 лет");
-        else if (!user.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$"))
+        else if (user.getEmail()==null ||user.getEmail().isEmpty()) {
+            throw new InvalidUserException("email не указан");
+        } else if (!user.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$"))
             throw new InvalidUserException("Невалидный email");
         else return "валидация успешна";
 

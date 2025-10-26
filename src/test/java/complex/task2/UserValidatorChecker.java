@@ -2,94 +2,157 @@ package complex.task2;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserValidatorChecker {
-    private UserValidator validator;
-    private User user1;
-    private User user2;
-    private User user3;
-    private User user4;
-    private User user5;
-    private User user6;
-    private User user7;
-    private User user8;
-    private User user9;
-    private User user10;
-    private User user11;
+    private UserValidator userValidator;
+    private User user1ValidAge;
+    private User user2ValidAge;
+
+    private User user1InvalidName;
+    private User user2InvalidName;
+    private User user3InvalidName;
+
+    private User user1InvalidAge;
+    private User user2InvalidAge;
+
+    private User user3InvalidEmail;
+    private User user4InvalidEmail;
+    private User user5InvalidEmail;
+    private User user6InvalidEmail;
+    private User user7InvalidEmail;
+    private User user8InvalidEmail;
+    private User user9InvalidEmail;
+
+    private User user1InvalidEmail;
+    private User user2InvalidEmail;
 
     @BeforeEach
-    void setUp(){
-        validator = new UserValidator(true);
-        user1 = new User("Bob", 18, "smth@mail.ru");
-        user2 = new User(null, 21, "smth@mail.ru");
-        user3 = new User("", 21, "smth@mail.ru");
-        user4 = new User("mary", 21, "smth@mail.ru");
-        user5 = new User("Poll", 100, "po@mail.ru");
-        user6 = new User("Maria", 17, "smth@mail.ru");
-        user7 = new User("Poll", 101, "po@mail.ru");
-        user8 = new User("Maria", 19, "bad@.com");
-        user9 = new User("Poll", 99, "no-at-symbol");
-        user10 = new User("Poll", 50, "@missing-user.com");
-        user11 = new User("Poll", 50, "user@domain");
+    void setUp() {
+        userValidator = new UserValidator(true);
+        user1ValidAge = new User("Ann", 18, "ann@mail.com");
+        user2ValidAge = new User("Nill", 100, "n@mail.com");
+
+        user1InvalidName = new User("ann", 18, "ann@mail.com");
+        user2InvalidName = new User(null, 18, "ann@mail.com");
+        user3InvalidName= new User("", 18, "ann@mail.com");
+
+        user1InvalidAge = new User("Ann", 17, "ann@mail.com");
+        user2InvalidAge = new User("Kat", 101, "k@mail.com");
+
+        user1InvalidEmail = new User("Mary", 30, null);
+        user2InvalidEmail = new User("Mary", 30, "");
+        user3InvalidEmail = new User("Poll", 99, "this is string");
+        user4InvalidEmail = new User("Polina", 19, "@mail.ru");
+        user5InvalidEmail = new User("Julia", 30, "name@");
+        user6InvalidEmail = new User("Mary", 30, "name@mail");
+        user7InvalidEmail = new User("Mary", 30, "name@mail.c");
+        user8InvalidEmail = new User("Mary", 30, "name@.com");
+        user9InvalidEmail = new User("Mary", 30, "name@mail@mail.com");
+
+
     }
 
     @Test
-    public void checkValidationEnabled(){
-        assertEquals("валидация успешна", validator.validate(user1));
+    public void checkValidBorderAgeUser() {
+        assertEquals("валидация успешна", userValidator.validate(user1ValidAge));
+        assertEquals("валидация успешна", userValidator.validate(user2ValidAge));
     }
 
     @Test
-    public void checkValidationUnabled(){
-        validator.setValidationEnabled(false);
-        assertEquals("валидация не включена", validator.validate(user1));
+    public void checkValidationUnabled() {
+        userValidator.setValidationEnabled(false);
+        assertEquals("валидация не включена", userValidator.validate(user1ValidAge));
+    }
+
+    @Test
+    public void checkNameStartsLowercase() {
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user1InvalidName));
+        assertEquals("Имя должно начинаться с заглавной буквы", ex1.getMessage());
     }
 
     @Test
     public void checkNullNameValidation() {
-        InvalidUserException ex = assertThrows(InvalidUserException.class, () -> validator.validate(user2));
-        assertEquals("Имя не может быть пустым", ex.getMessage());
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user2InvalidName));
+        assertEquals("Имя не может быть пустым", ex1.getMessage());
     }
 
     @Test
-    public void checkEmptyNameValidation() {
-        InvalidUserException ex = assertThrows(InvalidUserException.class, ()->validator.validate(user3));
-        assertEquals("Имя не может быть пустым", ex.getMessage());
+    public void checkEmptyStringNameValidation() {
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user3InvalidName));
+        assertEquals("Имя не может быть пустым", ex1.getMessage());
     }
 
     @Test
-    public void checkNameStartsLowerCaseValidation(){
-        InvalidUserException ex = assertThrows(InvalidUserException.class, ()->validator.validate(user4));
-        assertEquals("Имя должно начинаться с заглавной буквы", ex.getMessage());
-    }
-
-    @Test
-    public void checkAgeBorderValuesValidation(){
-        assertEquals("валидация успешна", validator.validate(user1));
-        assertEquals("валидация успешна", validator.validate(user5));
-    }
-
-    @Test
-    public void checkAgeUnderBorderValuesValidation(){
-        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () ->validator.validate(user6));
+    public void checkInvalidAgeValiadtion(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user1InvalidAge));
         assertEquals("Возраст должен быть от 18 до 100 лет", ex1.getMessage());
-        InvalidUserException ex2 = assertThrows(InvalidUserException.class, () ->validator.validate(user7));
+
+        InvalidUserException ex2 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user2InvalidAge));
         assertEquals("Возраст должен быть от 18 до 100 лет", ex2.getMessage());
     }
 
     @Test
-    public void checkInvalidEmailValidation(){
-        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () ->validator.validate(user8));
-        assertEquals("Невалидный email", ex1.getMessage());
-        InvalidUserException ex2 = assertThrows(InvalidUserException.class, () ->validator.validate(user9));
-        assertEquals("Невалидный email", ex2.getMessage());
-        InvalidUserException ex3 = assertThrows(InvalidUserException.class, () ->validator.validate(user10));
-        assertEquals("Невалидный email", ex3.getMessage());
-        InvalidUserException ex4 = assertThrows(InvalidUserException.class, () ->validator.validate(user11));
-        assertEquals("Невалидный email", ex4.getMessage());
+    public void checkNullEmailValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user1InvalidEmail));
+        assertEquals("email не указан", ex1.getMessage());
     }
+
+    @Test
+    public void checkEmptyEmailValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user2InvalidEmail));
+        assertEquals("email не указан", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidStringEmailValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user3InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithoutLocalPartValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user4InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithoutAtValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user4InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithoutDomainValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user5InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithoutDomainDotPartValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user6InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithoutDomainAfterDotPartValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user7InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithoutDomainBeforeDotPartValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user8InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+    @Test
+    public void checkInvalidEmailWithSeveralAtValidation(){
+        InvalidUserException ex1 = assertThrows(InvalidUserException.class, () -> userValidator.validate(user9InvalidEmail));
+        assertEquals("Невалидный email", ex1.getMessage());
+    }
+
+
 }
