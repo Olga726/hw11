@@ -1,6 +1,6 @@
 package clear.code;
 
-public class Bird {
+public abstract class Bird {
 
 
     /*public void fly() {
